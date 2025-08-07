@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trivia</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap');
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #b9b3a9;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #ffffff;
+      padding: 15px 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: center;
+    }
+
+    nav a {
+      margin: 0 15px;
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    nav a:hover {
+      color: #428bca;
+    }
+
+    .container {
+      width: 450px;
+      padding: 20px;
+      margin: 80px auto;
+      background-color: #fff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      border-radius: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .question {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .options {
+      margin-bottom: 20px;
+    }
+
+    .option {
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #428bca;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      border-radius: 4px;
+      transition: background-color 0.3s;
+      margin-right: 10px;
+    }
+
+    .button:hover {
+      background-color: #3071a9;
+    }
+
+    .result {
+      text-align: center;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    .hide {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <nav>
+      <a href="Listainteractiva.html">Lista de Tareas</a>
+      <a href="carritofalso.html">Carrito de Compras</a>
+      <a href="#">Quiz</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <h1>🧠 Trivia Interactiva</h1>
+    <div id="trivia-box">
+      <div class="question" id="question">Pregunta cargando...</div>
+      <div class="options" id="options"></div>
+      <button class="button" onclick="nextQuestion()">Siguiente</button>
+      <div class="result" id="result"></div>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        question: "¿Cuál es la capital de Francia?",
+        options: ["París", "Madrid", "Berlín", "Roma"],
+        answer: "París"
+      },
+      {
+        question: "¿Cuántos planetas hay en el sistema solar?",
+        options: ["7", "8", "9", "10"],
+        answer: "8"
+      },
+      {
+        question: "¿Qué lenguaje se usa para estilos en páginas web?",
+        options: ["HTML", "Python", "CSS", "Java"],
+        answer: "CSS"
+      }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+    const questionEl = document.getElementById('question');
+    const optionsEl = document.getElementById('options');
+    const resultEl = document.getElementById('result');
+
+    function showQuestion() {
+      const q = questions[currentQuestion];
+      questionEl.textContent = q.question;
+      optionsEl.innerHTML = '';
+      q.options.forEach(option => {
+        const btn = document.createElement('button');
+        btn.textContent = option;
+        btn.className = 'button option';
+        btn.onclick = () => checkAnswer(option);
+        optionsEl.appendChild(btn);
+      });
+    }
+
+    function checkAnswer(selected) {
+      const correct = questions[currentQuestion].answer;
+      if (selected === correct) {
+        score++;
+      }
+
+      // Desactivar botones
+      Array.from(optionsEl.children).forEach(btn => {
+        btn.disabled = true;
+        if (btn.textContent === correct) {
+          btn.style.backgroundColor = "#28a745"; // verde
+        } else if (btn.textContent === selected) {
+          btn.style.backgroundColor = "#dc3545"; // rojo
+        }
+      });
+    }
+
+    function nextQuestion() {
+      currentQuestion++;
+      if (currentQuestion < questions.length) {
+        showQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      questionEl.textContent = '¡Trivia finalizada!';
+      optionsEl.innerHTML = '';
+      resultEl.textContent = `Tu puntuación fue: ${score} de ${questions.length}`;
+      const restartBtn = document.createElement('button');
+      restartBtn.textContent = "Reiniciar";
+      restartBtn.className = "button";
+      restartBtn.onclick = restartTrivia;
+      resultEl.appendChild(document.createElement("br"));
+      resultEl.appendChild(restartBtn);
+    }
+
+    function restartTrivia() {
+      currentQuestion = 0;
+      score = 0;
+      resultEl.textContent = '';
+      showQuestion();
+    }
+
+    // Iniciar
+    showQuestion();
+  </script>
+</body>
+</html>
